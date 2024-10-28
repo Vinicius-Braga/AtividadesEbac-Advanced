@@ -1,0 +1,136 @@
+﻿Diferenças entre as abordagens:
+    • Top-Down (Memoization):
+        ◦ A solução começa do problema original e divide em subproblemas recursivamente.
+        ◦ Só resolve os subproblemas necessários, evitando cálculos repetidos por meio de memorização.
+        ◦ É uma abordagem recursiva e, por isso, pode enfrentar problemas de limite de pilha para números muito grandes, como 100!.
+        ◦ Boa quando há muitos subproblemas repetidos.
+    • Bottom-Up (Tabulação):
+        ◦ A solução constrói os resultados de forma iterativa a partir dos subproblemas mais simples.
+        ◦ Evita a recursão e, portanto, não enfrenta problemas de estouro de pilha.
+        ◦ Necessita armazenar os resultados de todos os subproblemas até chegar à solução.
+        ◦ Geralmente mais eficiente em termos de tempo e memória para problemas que podem ser resolvidos iterativamente.
+Justificativa para cálculo de fatoriais grandes com soluções recursivas:
+    • A solução recursiva simples enfrentaria problemas de estouro de pilha ao calcular fatoriais de números grandes como 100, por causa do número excessivo de chamadas recursivas.
+    • Usar programação dinâmica (Top-Down) com memorização ajuda a evitar cálculos redundantes, mas ainda pode enfrentar problemas com o limite da pilha para números muito grandes.
+    • Já a solução Bottom-Up (Tabulação), por ser iterativa, não sofre com problemas de pilha e pode lidar com números grandes mais eficientemente. Com o uso da classe BigInteger, também resolvemos o problema do limite do tipo de dado em Java.
+
+
+
+1. Solução Recursiva Simples
+Na abordagem recursiva simples, o valor de Fibonacci é calculado chamando recursivamente as duas subfunções para calcular `F(n-1)` e `F(n-2)`.
+
+public class FibonacciRecursivo {
+    public static int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fibonacci(10));  // Exemplo para n = 10
+    }
+}
+
+Complexidade de Tempo:
+- A complexidade de tempo da solução recursiva simples é O(2^n).
+- Isso ocorre porque, para calcular o valor de `F(n)`, o algoritmo precisa recalcular subproblemas muitas vezes. Por exemplo, `F(5)` chama `F(4)` e `F(3)`, e `F(4)` chama `F(3)` e `F(2)`; o cálculo de `F(3)` é feito várias vezes.
+- Essa repetição resulta em um crescimento exponencial do número de chamadas recursivas.
+
+Diagrama de Chamada:
+
+                    F(5)
+                   /    \
+                F(4)    F(3)
+               /   \     /   \
+            F(3)   F(2) F(2) F(1)
+           /   \
+        F(2)  F(1)
+
+
+
+
+
+
+2. Solução com Programação Dinâmica (Memoization ou Tabulação)
+
+Top-Down com Memoization
+Utilizando memorização, armazenamos os valores já calculados para evitar a repetição de subproblemas.
+
+import java.util.HashMap;
+
+public class FibonacciMemoization {
+    private static HashMap<Integer, Integer> memo = new HashMap<>();
+
+    public static int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+
+        // Verifica se o resultado já foi calculado
+        if (memo.containsKey(n)) {
+            return memo.get(n);
+        }
+
+        // Calcula e armazena o resultado
+        int result = fibonacci(n - 1) + fibonacci(n - 2);
+        memo.put(n, result);
+        return result;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fibonacci(10));  // Exemplo para n = 10
+    }
+}
+
+Complexidade de Tempo:
+- A complexidade de tempo dessa abordagem é O(n).
+- Com a memorização, cada subproblema é resolvido uma única vez, evitando cálculos repetidos.
+- Assim, o tempo necessário para resolver o problema é linear, pois cada valor de Fibonacci é calculado uma vez e armazenado.
+
+Bottom-Up (Tabulação)
+
+
+public class FibonacciBottomUp {
+    public static int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+
+        for (int i = 2; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+
+        return dp[n];
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fibonacci(10));  // Exemplo para n = 10
+    }
+}
+```
+
+Complexidade de Tempo:
+- Assim como a abordagem Top-Down, a solução Bottom-Up também tem complexidade O(n), pois preenchemos uma tabela de tamanho `n` de forma iterativa.
+
+Comparação das Soluções:
+
+- Solução Recursiva Simples: 
+  - Complexidade: O(2^n).
+  - Tempo de execução cresce exponencialmente à medida que `n` aumenta, tornando-a inviável para valores grandes de `n`.
+  - Recalcula subproblemas várias vezes, o que gera muita ineficiência.
+
+- Solução com Programação Dinâmica:
+  - Complexidade: O(n), tanto para a versão Top-Down (Memoization) quanto para a Bottom-Up (Tabulação).
+  - Muito mais eficiente, pois evita o recalculo de subproblemas.
+  - Armazena os resultados dos subproblemas para uso posterior.
+
+Por que a solução com Programação Dinâmica é melhor?
+- A solução com programação dinâmica é significativamente mais eficiente porque evita a repetição desnecessária de cálculos. Na abordagem recursiva simples, o mesmo valor de Fibonacci é recalculado múltiplas vezes, levando a um número exponencial de chamadas. Com programação dinâmica, cada valor é calculado uma única vez e armazenado (na memorização) ou preenchido iterativamente (na tabulação), resultando em um tempo de execução linear O(n).
+
+Portanto, a solução com programação dinâmica é muito mais escalável e adequada para grandes valores de `n`, enquanto a solução recursiva simples se torna impraticável rapidamente.
+
